@@ -1,0 +1,17 @@
+\chapter{Testing}
+
+In this chapter, we will discuss the way we test SQAT during development phase. Specifically, we will talk about continuous testing approach and continuous testing services that we use in SQAT.
+
+\section{Continuous Testing}
+
+Continuous testing uses excess cycles on a developer's workstation to continuously run regression tests in the background, providing rapid feedback about test failures as code is edited \cite[]{saff2005continuous}. We used continuous testing to develop SQAT. However, to use continuous testing, we need to have automated test cases. For this reason, we decided  to use Test-driven Development (TDD) approach to complement continuous testing. To write a new function in TDD, we write test cases for the function first. Then, we write codes to pass these test cases. Finally, we refactor our codes before going through another round of test, code, and refactor cycle. 
+
+We will show the way we develop a new functionality in SQAT. We use Gradle as our build tool for software quality measurement component. Gradle provides continuous build features. To write a new function in SQAT, we first use \verb|gradle -t test| command to run continuous build in background. Next, we start writing test cases using \verb|JUnit|. After writing these test cases, the continuous build should fail because we haven't the functionality does not exist yet. Then, we write the functionality to pass these test cases. Now, the continuous build should show that all test cases have been passed. At this point, we should have some messy codes and with some hacks to pass these test cases. Finally, we refactor our codes without changing the logic of our codes. 
+
+\section{Travis CI and Coverall}
+
+In this section, we will discuss about two services that we use to ensure the quality of SQAT project. The first service is Travis CI. Travis CI is a free and open source continuous integration service used to build and test software. It will continuously build and test all branches in a Git\footnote{Git is a distributed version control system} repository. When SQAT developers check in codes to the repository, Travis CI will build and test the codes immediately. Once the operation is completed, Travis CI will send an email to all developers about status of the build an test for the latest codes. Travis CI dashboard for SQAT can be found at \textcolor{blue}{\underline{https://travis-ci.org/Andyccs/sqat}}.
+
+Coveralls is a web service to track code coverage over time, and ensure that all new codes are fully covered. Similar to Travis CI, Coveralls will run all test cases in a Git repository and generate a code coverage reports to developers. SQAT always maintain at least 70\% code coverages. Coveralls dashboard for SQAT can be found at \textcolor{blue}{\underline{https://coveralls.io/github/Andyccs/sqat}}.
+
+By using Travis CI and Coverall in SQAT, bugs and code coverages are transparent and visible to all developers. Developers will be more informed with current states of SQAT project. Hence, they will develop better codes and test cases to fix bugs and maintain certain level of code coverage.

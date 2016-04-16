@@ -1,0 +1,48 @@
+\documentclass[12pt]{report}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=35mm,
+    right=30mm,
+    bottom=30mm,
+    top=30mm,
+}
+
+\usepackage{thesis_command}
+
+\begin{document}
+
+\include{cover}
+\include{title}
+
+\newpage
+\clearpage
+\setcounter{page}{1}
+\pagenumbering{roman}
+
+\include{abstract}
+\include{acknowledgement}
+
+\renewcommand{\contentsname}{Table of Contents}
+\tableofcontents
+
+\include{list_tables}
+\include{list_figures}
+
+\newpage
+\clearpage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\include{introduction}
+\include{literature_review}
+\include{requirement}
+\include{design}
+\include{implementation}
+\include{testing}
+\include{conclusion}
+\include{bibliography}
+\include{appendix}
+
+% \include{temp_list_of_topic}
+\end{document}

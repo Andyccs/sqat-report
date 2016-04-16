@@ -1,0 +1,150 @@
+\chapter{Introduction}
+
+Software quality, as defined by \citet{ieee_quality}, is the degree to which software possesses a desired combination of attributes. The desired attributes are called software quality attributes. These quality attributes have been defined in many standards and models, such as McCall's Quality Model, Boehm's Quality Model and ISO/IEC 9126 standard. Examples of quality attributes are reliability, maintainability, and efficiency. Quality attributes are qualitative. We need to measure software quality metrics so that we can related them with software quality attributes. By doing so, we can quantify overall software quality. 
+
+\section{Background}
+
+In School of Computer Engineering of Nanyang Technological University (NTU), students submit thousands set of codes every semester to complete their exercises, assignments and projects. For assignments, the set of codes are usually similar, unless students make horrible mistakes when doing the assignments. It is still feasible, although troublesome, to assign teaching assistants to check and mark these codes for each assignment. 
+
+For Final Year Project (FYP), students work with different supervisors on different projects. The codes submitted by students are completely different. It is infeasible to put more human resources to check these codes. Although programmings are important parts of these projects, students are solely examined based on the final outcomes, reports and presentations. We need a scalable and economical approach to examine these codes. 
+
+\section{Objective}
+
+The goal of this project is to develop Software Quality Analysis Tool (SQAT), a tool that is able to assess the quality of the source codes of undergraduate projects automatically. The proposed application will assess the quality of source codes by considering the structural metrics, i.e. object-oriented metrics and coding standards. After assessing the source codes, the application will produce reports that consists of quality scores, warning messages, locations of bad codes, and suggestions.
+
+\section{Scope}
+
+This project was started from scratch. Although the objective of this project is ambitious, the scope of this project is to setup the foundation for SQAT. The foundation for SQAT includes the following:
+
+\begin{enumerate}
+    \item Software quality measurement tool
+    \item Scalable architecture
+    \item Front-end web application
+\end{enumerate}
+
+Software quality measurement tool is the main component. By supplying source codes as our inputs, the component will give us a quality score, software quality metrics, warning message, location of bad codes and suggestion. We implemented five types of object oriented metric calculations in this component to demonstrate the usage of this component. In addition, we also relate these metrics to two software quality attributes. By doing so, future projects can extend the number of object oriented calculations for this component. 
+
+We need a scalable architecture. When SQAT is used in production, professors and students will ask SQAT to check for hundreds set of codes every day. SQAT must be able to scale vertically (adding more hardware resources such as CPU, RAM, and disk space to a computer) and horizontally (adding more computers to the system) to meet increasing demands in the future.
+
+We also implement a web interface to demonstrate the usage of the main component, which is the software quality metric calculator. It should allow users to submit Java source codes and produce an overall report. 
+
+\section{Resource Allocation and Costing}
+
+The only cost for this project is to sign up for a VPS\footnote{Virtual private server}. This section will compare three VPS providers, i.e. AWS\footnote{Amazon Web Service}, Google Cloud Platform, and Digital Ocean. The specification for our VPS is 1 CPU core, 1GB RAM, and 20GB persistent storage \footnote{Google Compute Engine is an exception. If we take a VPS with 1GB RAM, the price will still be the same as a VPS with 3.75GB RAM. }. According to Table \ref{table:vps_cost}, we need to spend a total \$20.00 for Digital Ocean, \$36.96 for AWS, and \$49.04 for Google Cloud Platform, for one month. 
+
+Digital Ocean only provides VPS to its users. If we want to setup load balancers in Digital Ocean, we need to create two more VPS (each with 1 CPU, 512MB RAM, 10GB SSD, and 1TB Transfer) and setup the load balancer manually, which will cost us another $\$5.00 \times 2 = \$10.00$ dollars \cite[]{mitchellanicas2015}. In contrast, AWS and Google Cloud Platform provide load balancer service out-of-the-box. Although Google Cloud Platform seems to be the most expensive choice in our case, it is 15\% - 41\% less expensive than AWS when the specifications of VPS increase \cite[]{milesward2016}. 
+
+Since we only need VPS for experiment purpose, at the same time need to setup the VPS by using limited human resources, we choose AWS as our VPS provider. 
+
+\begin{table}
+\centering
+\begin{tabular}{|| p{4cm} | p{2.8cm} | p{2.5cm} | p{3cm} ||}
+    \hline
+    \hline
+    \textbf{Name} & \textbf{Specification} & \textbf{Unit price} & \textbf{Total price/month} \\ 
+    \hline
+    \hline
+    AWS Elastic Compute Cloud (EC2) & \specialcell[t]{1 CPU\\1 GB RAM} & \$0.02 / hour & \$14.40 \\
+    \hline
+    AWS Elastic block Store & \specialcell[t]{20GB} & \$0.12 / GB / month & \$2.40 \\
+    \hline
+    AWS Elastic Load Balancing & \specialcell[t]{N/A} & \$0.028 / hour & \$20.16 \\
+    \hline
+    \hline
+    Google Compute Engine & \specialcell[t]{1 CPU\\3.75 GB RAM}  & \$0.042 / hour & \$30.24 \\
+    \hline
+    Google Compute Engine Storage & \specialcell[t]{20GB} & \$0.04 / GB / month & \$0.80 \\
+    \hline
+    Load Balancing and protocol forwarding & \specialcell[t]{N/A} & \$0.025 / hour & \$18 \\
+    \hline
+    \hline
+    Digital Ocean VPS & \specialcell[t]{1 CPU\\1GB RAM\\20GB SSD\\2TB Transfer} & \$10.00 / VPS & \$10.00 \\
+    \hline
+    Load Balancing & \specialcell[t]{2 VPS} & \$5.00 / VPS & \$10.00 \\
+    \hline
+    \hline
+\end{tabular}
+\caption{The total price of 1 CPU, 1GB RAM, and 20GB SSD virtual private server for a month, by different providers. All prices are in US Dollar. }
+\label{table:vps_cost}
+\end{table}
+
+\section{Project Schedule}
+
+In this section, we present the schedules for this project. Table \ref{table:project_schedule} is the original schedule. However, the actual project schedule is deviated from the original project schedule. Table \ref{table:project_schedule_actual} shows the actual project schedule. The deviation is due to the following reasons:
+
+\begin{enumerate}
+    \item Implementing quality metrics calculator for Java is not an easy task. Sometime we need to modified the ANTLR (Another Tool for Language Recognition) grammar of Java in order to get certain quality metrics.
+    \item With the adoption of Docker and Kubernete in this project, they provide an abstraction layer for containers to interact with each other. As a result, we do not need to setup a load balancer.
+    \item We decided not to support C++ now, so that we have more time to spend on the foundation of SQAT. 
+    \item We decided not to purchase a domain name for SQAT to reduce cost. 
+\end{enumerate}
+
+\begin{table}
+\centering
+\begin{tabular}{ | l | l | } 
+    \hline
+    \textbf{Task} & \textbf{Estimate Completion Date} \\ 
+    \hline
+    Setup project for SQAT style checker & \\ 
+    Understand ANTLR parser generator & 6 September 2015 \\
+    Design architecture for SQAT & \\
+    \hline
+    Develop style checker library for Java & 13 September 2015 \\
+    \hline
+    Develop quality metrics calculator for Java & 20 September 2015 \\
+    \hline
+    Develop the web interface for SQAT & 27 September 2015 \\
+    \hline
+    Develop style checker library for C++ & 4 October 2015 \\
+    \hline
+    Develop object-oriented calculator for C++ & 11 October 2015 \\
+    \hline
+    Unit testing and functional testing & 18 October 2015 \\
+    \hline
+    Deployment of the SQAT & \\
+    Purchase a domain name for SQAT & 25 January 2016 \\
+    Beta Testing & \\
+    \hline
+    Setup load balancer & 28 January 2016 \\
+    \hline
+    Final Report & 29 February 2016 \\
+    \hline
+    Final Presentation & 20 March 2016 \\
+    \hline
+\end{tabular}
+\caption{Original project schedule}
+\label{table:project_schedule}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{| p{7.7cm} | p{5.8cm} |}
+    \hline
+    \textbf{Task} & \textbf{Completion Date} \\ 
+    \hline
+    Study current commercial code analysis tools, study research papers about object-oriented metrics & 11 August 2015 to 16 August 2015 \\
+    \hline
+    Study common mistakes in students' programming assignment & 17 August 2015 to 23 August 2015 \\
+    \hline
+    Study Java coding standards published by Google and Sun Micro & 24 August 2015 to 30 August 2015 \\
+    \hline
+    Design overall architecture for SQAT, setup project in GitHub, study ANTLR parser generator & 31 August 2015 to 6 September 2015 \\
+    \hline
+    Choose open source license, develop style checker library for Java, write project plan & 7 September 2015 to 13 September 2015 \\
+    \hline
+    Develop quality metrics calculator for Java, release version 0.1.0 & 14 September 2015 to 11 October 2015 \\
+    \hline
+    Read research papers about framework and algorithm to assess codes, draw overall system design diagram, update project plan & 12 October 2015 to 25 October 2015 \\
+    \hline
+    Develop web interface for SQAT & 26 October 2015 to 1 November 2015 \\
+    \hline
+    Unit testing, continuous build with Travis CI, coverage report with Coverall & 2 November 2015 to 8 November 2015 \\
+    \hline
+    Develop quality metric suite using Goal Question Metric approach, improve quality metric calculator to include more metrics, develop overall quality report in web interface & 16 December 2015 to 23 December 2015 \\
+    \hline
+    Study and adopt Docker and Kubernete in SQAT, deploy SQAT to Amazon Elastic Compute Cloud, release version 0.2.0 & 28 December 2015 to 1 January 2016 \\
+    \hline
+\end{tabular}
+\caption{Actual project schedule}
+\label{table:project_schedule_actual}
+\end{table}

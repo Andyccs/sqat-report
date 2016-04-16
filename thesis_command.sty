@@ -1,0 +1,83 @@
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
+\usepackage{minted}
+\usepackage{tikz}
+\usepackage{listings}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage[nottoc]{tocbibind}
+\bibliographystyle{apa}
+\setcitestyle{authoryear, open={(}, close={)}, aysep={, }}
+\renewcommand{\baselinestretch}{1.5}
+
+\newcommand{\specialcell}[2][c]{%
+    \begin{tabular}[#1]{l}
+    #2
+    \end{tabular}
+}
+
+\newcommand{\usecases}[4]{
+    \subsubsection{#1}
+    
+    \begin{center}
+        \begin{tabular}[h!]{ r p{10cm} }
+            Use case name: & #1 \\
+            Actors: & #2 \\
+            Description: & #3 \\
+            Flow of events: & \specialcell[t]{#4} \\
+        \end{tabular}
+    \end{center}
+}
+
+% The 'ntutxtfig' environment is used to insert 'textual' figures
+% into our document, such as brief source code snippets.  Usage is:
+%
+%	\begin{ntutxtfig}[spacing]{label}{caption}{width}
+%	  text for 'figure'
+%	\end{ntutxtfig}
+%
+% where:
+%	- 'spacing' is a number representing the baselinestretch
+%	  (line-spacing) to use for the text figure.  Default is
+%          single-spacing.
+%	- 'label' is the label to be used for referencing.
+%	   The figure can be referenced as Figure~\ref{fig:label}.
+%	- 'caption' is the caption to display below the figure.
+%	- 'width' is the width of the minipage in which the text figure
+%	  is formatted.
+%
+% Sample usage:
+% \begin{ntutxtfig}[1.0]{code}{Hello World}{0.5\textwidth}
+%   Some text
+% \end{ntutxtfig}
+%
+\newenvironment{ntutxtfig}[4][\spacing]{%
+	\begin{figure}[t]
+		\centering
+		\def\ntucaption{#3}%
+		\def\ntulabel{#2}%
+		\renewcommand{\baselinestretch}{#1}%
+		\normalsize%
+		\begin{minipage}{#4}
+		\hrule \hrule
+		\bigskip
+}{%
+		\hrule \hrule
+		\end{minipage}
+		\renewcommand{\baselinestretch}{1.5}%
+		\normalsize%
+		\caption{\ntucaption}
+		\label{figure:\ntulabel}
+	\end{figure}
+}
+
+\usepackage[skip=0pt]{caption}
+
+% no red boxes on parser error:
+\makeatletter
+\expandafter\def\csname PYGdefault@tok@err\endcsname{\def\PYGdefault@bc##1{{\strut ##1}}}
+\makeatother

@@ -1,0 +1,17 @@
+\chapter{Conclusion}
+
+In this project, we have developed the foundation of SQAT. We identified the main goal of this project is to build an automatic code assessment tool. The tool will be used by NTU students and professors to analyse codes for projects and assignments. Since software quality attributes are qualitative, we need a way to quantified these data. We use Goal Question Metric (GQM) approach to calculate scores for software quality attributes. We also implemented the framework proposed by \cite{washizaki2007framework} for the software quality measurement component. During design phase, we laid out a scalable architecture, called the microservices architecture, to develop SQAT. In addition, we also pointed out that ANTLR is the core tool that we used to analyse codes and collect software metrics. Furthermore, we discussed about the important of Flux architecture for front-end website development. During implementation phase, we discussed about the implementation of code style configuration using Javascript Object Notation (JSON) file format, score calculator using linear piecewise function, and front-end development using React.js and Alt.js. Finally, we discussed about the important of continuous testing, Travis CI, and Coverall to maintain the quality of SQAT project. Codes for this project is hosted in GitHub, and can be found at \textcolor{blue}{\underline{https://github.com/Andyccs/sqat}}
+
+\section{Future Recommendation} \label{section:future_recommendation}
+
+This project can be further improved in five different ways, i.e. conducting acceptance testing, implementing a rating level deriving tool, developing a better software quality metric calculator, developing a better score calculator, and supporting more configuration file format. 
+
+Due to time limit for this project, we do not conduct usability and acceptance testing. Although we only have an initial prototype of tool, conducting an acceptance testing earlier would allow us to detect flaws in our requirements and functionality earlier. By doing so, we can eliminate bugs and set the development road map of SQAT in the right direction. The testing could probably be a paid experiments done by a group of students from school of computer engineering. 
+
+The rating level deriving tool was originally mentioned in \cite{washizaki2007framework}. It should be tool to extract software quality metrics from a given software project in a given programming language. By having this tool, we can collect software quality metrics data in scale, and hence, able to develop benchmark values for software quality metrics. 
+
+The aggregation tool is described in \cite{washizaki2007framework} paper as a tool that allows evaluation of software quality from the component level up to whole system. However, the score calculator in SQAT only allows evaluation of software quality at the component level only. By improving this tool, we can zoom in to evaluate at component level and zoom out to evaluate at packages and whole system level. 
+
+The Goal Question Metric (GQM) approach is essential for SQAT. The GQM in SQAT should be improved to cover more software quality attributes and more metrics that related to these attributes. By doing so, we can get better analysis reports. 
+
+Finally, the \verb|ConfigurationLoader| can be extended to support more configuration file formats, such as Extensible Markup Language (XML) and Command Seperated Value (CSV).

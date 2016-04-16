@@ -1,0 +1,11 @@
+*.aux
+*.log
+*.toc
+*.pyg
+*.out
+*.lot
+*.blg
+*.bbl
+*.lof
+*.pdf
+_minted-main/

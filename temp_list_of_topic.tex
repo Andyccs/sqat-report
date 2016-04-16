@@ -1,0 +1,155 @@
+\newpage
+\textbf{List of Topics}
+
+Planning for the structure of this reports.
+
+\par \noindent Here is a list of topics in my mind:
+
+\begin{enumerate}
+    \item Summaries of all research paper I have read
+    \begin{enumerate}
+        \item Goal Quality Metric
+        \item Metric Suite for Object Oriented
+        \item A Framework for Measuring and Evaluating Program Source Code Quality
+    \end{enumerate}
+    
+    \item ANTLR as the core component for SQAT, style checking, and metrics extraction tools.
+    
+    \item Planning: Explore and understand similar tools for commercial
+    
+    \item Design: Overall Architecture, related to microservices
+    \item Design and Development: Microservice, GRPC, and Protocol Buffer. Comparison with Apache Thrift. 
+    \item Design and Development: Dependency Injection
+    
+    \item Development: Percentage calculator and aggregator components
+    \item Development: Javascript, ES6, Express.js, React.js, Flux, Webpack
+     \item Deployment: Docker, Kubernete, AWS and Digital Ocean
+    
+    \item Testing: Continuous testing, Travis CI, and Coverall
+    
+    \item Deployment: Domain name purchase and configuration
+    
+    \item Development Tools: Git, Gitflow, GitHub, Open Source License, Release process
+    
+\end{enumerate}
+
+
+This section is independent and different from the \cite[]{einstein} abstract. It should be concise although the length \citet{knuth-fa} may vary. It can be a single short section of one or \citep{knuthwebsite} two paragraphs, or a short chapter. Generally, the introduction includes \citeauthor{einstein} the following \citeyear{dirac}:
+
+\begin{enumerate}
+    \item Any background information needed to understand the problem. 
+    \item A statement of the problem being investigated or the purpose of the study. The objectives of the project should be stated clearly.
+    \item A summary of the history of related work and/or theoretical analysis of problems related to your topic. If this portion is lengthy, a separate chapter could be written for this purpose. It is important to discuss the contribution of each of these to the problem investigated and to show how the present investigation arises from contradictions or inadequacies of earlier investigations. This section is optional and will depend on the nature of the project carried out.
+    \item In some disciplines, it is appropriate to indicate the limitations of the project.
+    \item A brief statement of the source of data and the procedure of the project.
+    \item A preview of the organization of the report to assist the reader in grasping the relationship between the various parts.
+\end{enumerate}
+
+
+
+\noindent A Metric Suite for Object Oriented Design \cite{chidamber1994metrics}:
+
+\begin{enumerate}
+    \item Important component of process improvement is the ability to measure the process
+    \item the focus on process improvement has increased the demand for software measure, or metrics with which to manage the process
+    \item Six design metrics with theoretical base
+    \begin{enumerate}
+        \item Weighted methods per class
+        \item Depth of inheritance tree
+        \item Number of children
+        \item Coupling between object classes
+        \item Response for a class
+        \item Lack of Cohesion in methods
+    \end{enumerate}
+    \item lacking a theoretical basis [41], lacking in desirable measurement properties [47], being insufficiently generalized or too implementation technology dependent [45], and being too labor-intensive to collect [22].
+\end{enumerate}
+
+\noindent An evaluation of the MOOD set of object-oriented software metrics \cite{harrison1998evaluation}:
+
+\begin{enumerate}
+    \item valid measure, MOOD metrics for:
+    \begin{enumerate}
+        \item encapsulation: method hiding factor and attribute hiding factor
+        \item inheritance: method inheritance factor and attribute inheritance factor
+        \item coupling: coupling factor
+        \item polymorphism: polymorphism factor
+    \end{enumerate}
+\end{enumerate}
+
+\noindent Classifying metrics for assessing object-oriented software maintainability: a family of metrics' catalogs \cite{de2015classifying}:
+
+\begin{enumerate}
+    \item software maintainability is considered a software attribute playing an important role in quality level
+    \item provide useful information such as a metrics' classification for help researchers in the decision-making process about the selection of the OOSM metrics considering all maintainability tasks.
+    \item http://julianasaraiva.info/oosmMetricsPortal
+\end{enumerate}
+
+\noindent A methodology for collecting valid software engineering data \cite{basili1984methodology}:
+
+\begin{enumerate}
+    \item Six step of goal oriented data collection (Goal Question Metric):
+    \begin{enumerate}
+        \item Establish the goals of the data collection
+        \item Develop a list of questions of interest
+        \item Establish data categories
+        \item Design and test data collection form
+        \item Collect and validate data
+        \item Analyze data
+    \end{enumerate}
+\end{enumerate}
+
+\noindent Book, Goal Question Metric Paradigm \cite{yi1994goal}:
+
+\begin{enumerate}
+    \item Software development requires a measurement mechanism for feedback and evaluation. project planning, strengths and weaknesses of current processes and products, rationale for adopting / refining techniques, access quality of specific process and products
+    \item Measurement also helps, during the course of a project, to assess its progress, to take corrective action based on this assessment, and to evaluate the impact of such action
+    \item Measurement in order to be effective must be:
+    \begin{enumerate}
+        \item Focused on specific goals
+        \item Applied to all life-cycle products, processes and resources
+        \item Interpreted based on characterization and understanding of the organisational context, environment and goals
+    \end{enumerate}
+    \item Goal Question Metric approach is a mechanism for defining and interpreting operational and measurable software
+\end{enumerate}
+
+\noindent A framework for measuring and evaluating program source code quality \cite{washizaki2007framework}
+
+\begin{enumerate}
+    \item We propose a practical framework which achieves effective measurement and evaluation of source code quality, solves many problems of earlier framework, and applies to programs in the C programming language.
+    \item The framework consists of 
+    \begin{enumerate}
+        \item a comprehensive quality metrics suite
+        \item a technique for normalization of measured values
+        \item an aggregation tool which allows evaluation in arbitrary module units from the component level up to whole system
+        \item a visualization tool for the evaluation of results
+        \item a tool for deriving rating levels
+        \item a set of derived standard rating levels
+    \end{enumerate}
+    \item There is great demand for practical technologies which can measure and evaluate quality with high precision and identify quality characteristics that will cause problems or will need improvement, because the quality of the source code has a significant effect on the overall system performance and cost of develop- ment and maintenance. 
+    \item A Metric contains the least amount of information, and simply measures a particular property without relating it to quality. 
+    \item A Quality Metric measures a property and includes a way to interpret the measurement result in terms of a quality characteristics. 
+    \item Quality Metrics is used to refer to multiple such metrics for a single quality characteristics and a Quality Metrics Suite treats several quality metrics and systematically summarizes the results of each.
+    \item Non-comprehensive suites, requires additional input besides the source code (e.g. a deisng model) and/pr they lack comprehensive coverage of the the measurable and assessable source code characteristics specified by the ISO9126-1 quality model
+    \item No quality metrics suite has been proposed which can measure source code quality for arbitrary units from component up to the overall system
+    \item traditional techniques have required additional information, such as usage scenarios or qualitative evaluations, in addition to the source code and it has not always been easy to derive rating levels
+    \item we do not implement tool for deriving rating levels
+    
+\end{enumerate}
+
+TK Why we need a framework?
+TK The paper: A framework for measuring and evaluating program source code quality
+
+
+===============
+List of acronym
+- NTU
+- AWS
+- SQAT
+- CPU
+- RAM
+
+4.2    Functional Requirements
+TK  submit  source  code  function  -  must  be  able  to  upload  zip  or  tar  le  -  thecode in the zip le can be in any folder organization - the code in the zip le cancontains any number of programming language, but users must specied whichlanguage to be analysed - if submitting for assignment, only certain number oftryTK quality report web interfaceTK interface for professors to check all results4.3    Non-functional RequirementsTK DocumentationTK Interoperability - can communicate and work with any programming lan-guageTK Conguration - the core component must be able to conguredTK Software portability - must be able to run in any environmentTK Performance - must be able to support hundreds of request per day
+
+4.3    Non-functional Requirements
+TK DocumentationTK Interoperability - can communicate and work with any programming lan-guageTK Conguration - the core component must be able to conguredTK Software portability - must be able to run in any environmentTK Performance - must be able to support hundreds of request per day

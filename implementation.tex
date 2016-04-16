@@ -1,0 +1,259 @@
+\chapter{Implementation}
+
+In this chapter, we will discuss major challenges during the implementation phase. In the first section, we will discuss about code style configuration in SQAT using configuration files. In the second section, we will discuss the way we calculate scores for quality attributes using score calculator. We end this chapter by discussing the challenges when developing a front-end user interfaces. 
+
+\section{Code Style Configuration}
+
+Consistent code styles are important for maintainability of software projects. The software measurement component enforces a small subset of code styles. For example, the indentation levels, import statement styles and method name format must be consistent for a piece of codes. However, not all projects have the same set of code style requirements; some projects might want to use 2 space characters for indentation and some projects might want to use 4 space characters. As a result, code style for each project must be configurable. 
+
+The software measurement component does accept code style configuration as an argument in its API. Currently, the component only accepts configuration written in Javascript Object Notation (JSON) format. An example of valid code style configuration is shown in Figure \ref{figure:code_style_configuration}. 
+
+\begin{figure}[t]
+\begin{minted}
+[frame=single,baselinestretch=1.0,fontsize=\footnotesize]
+{json}
+{
+  "methodNameFormat": "camelCase",
+  "wildCardImport": "noWildCard",
+  "braceStyle": "kr"
+}
+\end{minted}
+\caption{An example of valid code style configuration for SQAT}
+\label{figure:code_style_configuration}
+\end{figure}
+
+To implement this functionality, we first define a data structure to store all possible configurations. If some code style configurations are not present, the code style will be ignored and hence not be enforced by SQAT. Hence, we use a key-value pair dictionary to store these configuration, as shown in Figure \ref{figure:configuration_data_structure}. Next, we need to implement \verb|JsonConfigurationLoader| class that is responsible to deserialize JSON string to \verb|DefaultConfiguration| object. After implementing these two classes, when the component receives a configuration, it will use \verb|JsonConfigurationLoader| to convert the configuration in \verb|String| to a \verb|DefaultConfiguration| object. The \verb|DefaultConfiguration| object will then be used by any \verb|JavaListener| that need to know the configurations.
+
+\begin{figure}[t]
+\begin{minted}
+[frame=single,baselinestretch=1.0,fontsize=\footnotesize]
+{Java}
+public final class DefaultConfiguration implements Configuration {
+
+  private final Map<String, String> attributeMap = Maps.newHashMap();
+
+  @Override
+  public String[] getAttributeNames() {...}
+
+  @Override
+  public String getAttribute(String attributeName) {...}
+}
+
+public class JsonConfigurationLoader implements ConfigurationLoader {
+
+  @Override
+  public Configuration loadConfiguration(
+      String configuration) {...}
+}
+\end{minted}
+\caption{Configuration data structure and configuration loader}
+\label{figure:configuration_data_structure}
+\end{figure}
+
+The \verb|JsonConfigurationLoader| class is implementing \verb|ConfigurationLoader| interface. If we would like to support more configuration formats, such as XML and CSV, we can implement the \verb|ConfigurationLoader| to load these configuration formats. 
+
+\section{Score Calculator} \label{section:score_calculator}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = value,
+    ylabel = score,
+]
+\addplot [
+    domain=1:4, 
+    samples=2,
+    color=red,
+]
+{- x/3 + 4/3 };
+\addplot [
+    domain=0:1, 
+    samples=2,
+    color=red,
+]
+{1};
+\addplot [
+    domain=4:5, 
+    samples=2,
+    color=red,
+]
+{0};
+\addplot [
+    domain=0:1, 
+    samples=2, 
+    color=white,
+]
+{1.5};
+\end{axis}
+\end{tikzpicture}
+\caption{Example of score calculation graph for a software metric with benchmark value equal to one}
+\label{figure:score_calculation_graph}
+\end{figure}
+
+In this section, we will examine the way we calculate scores based on benchmark values and collected values. Let say the benchmark value for depth of conditional nesting is equal to one. If we found out that the depth of conditional nesting of a piece of code is equal to two, what score should we give to this software metric? 
+
+\cite{washizaki2007framework} solves this problem using linear piecewise functions. Specifically, if the collected value is less than or equal to benchmark value, the score for the software metric is 100\%. Else if the collected value is more than $benchmark$ value and less than 3 times of $benchmark + upper\_hinge$, the score will decrease according to the following equation:
+
+$$score=\bigg(-\frac{1}{3 \times benchmark} \times value + \frac{4}{3}\bigg) \times 100\%$$
+
+\noindent Any value that is greater than 3 times of $benchmark + upper\_hinge$ will be given a score of zero. The $upper\_hinge$ is equal to $benchmark$ in our case. The linear piecewise function is plotted in Figure \ref{figure:score_calculation_graph}. To answer the question we present at the beginning of this section, we just need to substitute $benchmark=1$ and $value=2$, and we should get the $score=66.67\%$. The linear piecewise function to calculate scores for a software metrics can be implemented easily as shown in Figure \ref{figure:score_calculation_code}. 
+
+\begin{figure}[t]
+\begin{minted}
+[frame=single,baselinestretch=1.0,fontsize=\footnotesize]
+{Java}
+public class ScoreCalculator {
+  public static float calculateScore(int value, int benchmark) {
+    if (value <= benchmark) {
+      return 100f;
+    } else if (value <= 4f * benchmark) {
+      return (((-1f / (3f * benchmark)) * value) + (4f / 3f)) * 100f;
+    } else {
+      return 0;
+    }
+  }
+}
+\end{minted}
+\caption{Java implementation of linear piecewise function to calculate score for a given software metric}
+\label{figure:score_calculation_code}
+\end{figure}
+
+After calculating the score for each metric, the calculation of scores for software quality attributes become trivial. We just need to take the average of software metrics that are related to a software quality attribute, as defined in the software quality metric suite in Table \ref{table:gqm}. We show an example in Table \ref{table:calculate_gqm}. In this example, the analysability score would be $(80 + 90 + 70) / 3 = 80\%$ and the testability score would be $(80 + 90) / 2 = 85\%$. 
+
+\begin{table}
+\centering
+\begin{tabular}{| l | p{5cm}| p{4cm} | l |}
+    \hline
+    Goal & Question & Metrics & Score \\
+    \hline
+    Analysability & Is the size of the code not too large? & Line of codes & 80\% \\
+    & Are the conditional statements not deep? & Depth of conditional nesting & 90\% \\
+    & Are the naming of variables good? & Average length of identifier & 70\% \\
+    \hline
+    Testability & Is the size of the code not too large? & Line of codes & 80\% \\
+    & Are the conditional statements not deep? & Depth of conditional nesting & 90\% \\
+    \hline
+\end{tabular}
+\caption{Calculating software quality attributes using GQM with calculated scores}
+\label{table:calculate_gqm}
+\end{table}
+
+\section{Front-end Development} \label{section:frontend_development}
+
+We have discussed about Flux Architecture in Section \ref{section:flux_architecture}. In this section, we will discuss about Alt.js, the implementation of Flux Architecture, and React.js, the view component in the architecture. React is a Javascript library for creating user interfaces. Many user interface libraries in Javascript use templates to build user interfaces, for example, you can write a template in HTML for a Facebook status, and then use the same template to generate a list of Facebook statuses. In contrast, React promotes composable and reusable user interface components. Typically, you write your React components as Javascript class\footnote{Javascript do have class! The latest standard, called ES6 or ES2015, defines many new features. The standard can be found at http://www.ecma-international.org/ecma-262/6.0/} and reuse your components whenever you need it. By doing so, everything in React is pure Javascript. 
+
+When data in the store (a component in Flux architecture that stores states) changes, React will find the minimal set of changes that need to be done on the user interface. This means that only the components that need to be updated know about the changes. In addition, changes in sub-components or child components cannot affect parent components. As a result, the data flow in React is unidirectional, which is consistent with Flux Architecture. Hence, the user interface is more predictable. 
+
+Alt.js is a library for managing data within Javascript applications based on Flux Architecture. The architecture of Alt is shown in Figure \ref{figure:alt_architecture}. Although Alt is based on Flux Architecture, it does make some changes to the original proposed architecture. Specifically, there is no dispatcher component. The dispatcher was originally described as the central hub that manages all data flow in a Flux application. However, the dispatcher class only contains a big switch statement that directs actions to stores in real implementation. This big switch statement can be replaced with something more elegant, hence the dispatcher becomes part of the library in Alt and it is invisible to Alt users. In the original Flux Architecture, it never defined when should we communicates with an API server to get data. You can do it before dispatching an action or when the store receives a new action. Alt defines a new component, called the source. When store receives a new action, it will ask the source to fetch new data from server. The sources act as the only way for the whole system to communicate with servers. After receiving new data from server, the sources will create new actions that will eventually change the state of the store.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+squarednode/.style={rectangle, draw=black!60, very thick, minimum size=1cm},
+]
+%Nodes
+\node[squarednode](action){Action};
+\node[squarednode](store)[right=of action]{Store};
+\node[squarednode](view)[right=of store]{View};
+\node[squarednode](source)[below=of view]{Source};
+\node[squarednode](api)[below=of source]{API};
+
+\node[squarednode](action2)[above=of store]{Action};
+\node[squarednode](action3)[below=of store]{Action};
+
+%Lines
+\draw[->] (action.east) -- (store.west);
+\draw[->] (store.east) -- (view.west);
+
+\draw[->] (view.north) -- (action2.east);
+\draw[->] (action2.south) -- (store.north);
+
+\draw[->] (view.south) -- (source.north);
+\draw[->] (source.west) -- (action3.east);
+\draw[->] (action3.north) -- (store.south);
+
+\draw[<->] (source.south) -- (api.north);
+\end{tikzpicture}
+\caption{Alt.js architecture}
+\label{figure:alt_architecture}
+\end{figure}
+
+We have discussed about React and Alt. Now, we will go though an example of Alt and React in SQAT for the rest of this section. The following code snippet shows 4 classes; \verb|SubmitSourceCode| is a React view component, \verb|SubmitSourceCodeAction| is an action, \verb|SubmitSourceCodeStore| is a store, and \verb|StyleCheckerReportSource| is a source. The full source codes are attached in Appendix \ref{appendix:SubmitSourceCode.jsx}, \ref{appendix:SubmitSourceCodeAction.js}, \ref{appendix:SubmitSourceCodeStore.js} and \ref{appendix:StyleCheckerReportSource.js}. In this example, we will show the way the application submits source codes to SQAT server. 
+
+\begin{minted}
+[
+frame=single,
+baselinestretch=1.0,
+fontsize=\footnotesize,
+]
+{javascript}
+// SubmitSourceCode.jsx
+export default class SubmitSourceCode extends React.Component {
+  _onSourceCodeSubmit() {
+    SubmitSourceCodeAction.fetchStyleCheckerReport();
+  }
+  render() {...}
+}
+
+// SubmitSourceCodeAction.js
+class SubmitSourceCodeAction {
+  fetchStyleCheckerReport() {
+    return null;
+  }
+  fetchStyleCheckerReportSuccess(report) {
+    return report;
+  }
+}
+
+// SubmitSourceCodeStore.js
+class SubmitSourceCodeStore {
+  constructor() {
+    this.sourceCode = null;
+    this.bindListeners({
+      handleFetchStyleCheckerReport: 
+          SubmitSourceCodeAction.fetchStyleCheckerReport,
+      ...
+    });
+    this.registerAsync(styleCheckerReportSource);
+  }
+
+  handleFetchStyleCheckerReport() {
+    this.currentState = SubmitSourceCodeState.SUBMITTING;
+    if(!this.getInstance().isLoading()) {
+      this.getInstance().performQualityCheck();
+    }
+  }
+
+  handleSourceCodeChanged(sourceCode) {
+    this.sourceCode = sourceCode;
+  }
+}
+
+// StyleCheckerReportSource.js
+const StyleCheckerReportSource = (alt) => {
+  return {
+    performQualityCheck: {
+      remote(state) {
+        // Get data from server and return the require data
+        ...
+        return response.data;
+      },
+      success: 
+          alt.actions.SubmitSourceCodeAction.fetchStyleCheckerReportSuccess,
+    }
+  };
+};
+\end{minted}
+
+The \verb|SubmitSourceCode| class is a React view. The \verb|render()| method will render all React components defined in this method. The \verb|_onSourceCodeSubmit()| method will be passed to selected React component, so that the component can call the method when the user want to submit source codes. The \verb|_onSourceCodeSubmit()| will then create a \verb|fetchStyleCheckerReport| action by using \verb|SubmitSourceCodeAction| class. Since the \verb|SubmitSourceCodeStore| is listening to \verb|fetchStyleCheckerReport| action, when the action is called, it will respond to the action by calling\\ \verb|handleFetchStyleCheckerReport()| method. The \verb|handleFetchStyleCheckerReport()| method will submit the source code to SQAT server using \verb|StyleCheckerReportSource| class. Once the \verb|StyleCheckerReportSource| class finishes the operation, it will use \verb|SubmitSourceCodeAction| class to create a \verb|fetchStyleCheckerReportSuccess()| action. The store will then respond to \verb|fetchStyleCheckerReportSuccess()| action. We did not show the store respond in the code snippet.
+
+% TK: Do we want to talk about docker?
+% \section{Software Containerization using Docker}
+
+% - Why docker 
+% - how to do it
+% - better deployment process
+
+% Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut nunc hendrerit, convallis nunc et, fringilla purus. In at nisi ac augue tincidunt consectetur at nec risus. Nulla eu tristique sem. Mauris fringilla augue hendrerit ipsum tempus, a ullamcorper sapien tincidunt. Etiam lobortis rutrum ultricies. Donec vel nisi tempor, tincidunt lectus vitae, varius diam. Phasellus eu mollis erat. Proin efficitur mauris non tincidunt fermentum. Suspendisse vestibulum, nisi eget rhoncus blandit, nulla libero luctus sapien, iaculis elementum massa neque quis erat. Nullam sapien enim, tristique at arcu eget, consectetur placerat mauris. Sed mollis rhoncus purus, maximus iaculis est efficitur a. Ut iaculis, erat in facilisis dapibus, odio velit hendrerit elit, quis placerat sapien nibh vel ex. Proin interdum magna commodo, tincidunt enim condimentum, pellentesque magna. Curabitur porttitor tempor nisi. Pellentesque venenatis facilisis lacus vel dictum. Fusce vestibulum nisl vitae nisi sollicitudin, nec bibendum mi maximus.
